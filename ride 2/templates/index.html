@@ -125,7 +125,7 @@ function speakMessage(message) {
 // Function to fetch and process data
 function fetchDataAndSpeak() {
     // Send a request to retrieve the JSON data from the server
-    fetch('data.json')
+    fetch('/static/data.json')
         .then(response => response.json())
         .then(jsonData => {
             // Process the received JSON data
