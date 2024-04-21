@@ -11,7 +11,7 @@ We aim to provide virtual assistant to our customers with a non-human entity.<br
  **BUSINESS MODEL** :
  1. Subscription Model : Weekly, monthly, half-yearly and annual basis.
  2. Advirtisement Based : Google ads and recommendation ads of new practitioner.
+<br>
 
-
-
+**SNIPPETS OF THE WORKING PAGES OF THE APP ARE PROVIDED IN THE 'Snippets' FOLDER.**
     
