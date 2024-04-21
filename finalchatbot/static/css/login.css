@@ -1,0 +1,100 @@
+body
+{
+	margin:0;
+	padding:0;
+	font-family:sans-serif;
+	background-size:cover;
+	background-position:center;
+}
+.login-form
+{
+	width:350px;
+	box-shadow:0 0 3px 0 rgba(0,0,0,0.3);
+	background:white;
+	padding:20px;
+	margin: 8% auto ;
+	text-align:center;
+    background: transparent;
+}
+.login-form h1
+{
+	color:black;
+	margin-bottom:30px;
+}
+
+.input-box
+{
+	border-radius:20px;
+	padding:10px;
+	margin:10px 0px;
+	width:90%;
+	border:1px solid black;
+	outline:none;
+	text-align:center;
+	border-radius:20px;
+}
+button
+{
+	color:white;
+	width:100%;
+	padding:10px;
+	border-radius:20px;
+	font-size:15px;
+	margin:10px 0;
+	border:none;
+	outline:none;
+	cursor:pointer;
+	border-radius:20px;
+}
+.login-btn
+{
+	background-color:blue;
+}
+
+
+.round-button {
+            width: 30px; 
+            height: 30px;
+            border-radius: 50%; 
+            background-color: white; 
+            color: #fff; 
+            border: none; 
+            cursor: pointer;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+	    margin: auto;
+	    position:relative;
+	    margin-top:20px;
+        }
+
+       
+        .round-button:hover {
+	    transform: scale(1.1);
+        }
+
+       
+        .button-image {
+            width: 30px; /* Set the image width */
+            height: 30px; /* Set the image height */
+	    
+        }
+
+	 .square-image {
+            width: 30px; /* Set the image width to 100% of the container */
+            height: 30px; /* Maintain the aspect ratio */
+	    border-radius:50%
+        }
+
+
+
+.text-label {
+    margin-right: 10px; /* Adjust this value to control the spacing between the text and the button */
+}
+
+.button-with-text {
+    align-items: center;
+    margin-top: 10px; /* Adjust this value to control the spacing */
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Data to Firebase</title>
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js" type="module"></script>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* CSS styling for the heading */
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* CSS styling for the container of the pie chart */
+        #uploadButton {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pie-chart {
+            height: 300px;
+            width: 300px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weekly Analysis</h1>
+    <button id="uploadButton">Upload Data</button>
+
+    <!-- Canvas for the weekly analysis pie chart -->
+    <canvas id="weeklyAnalysisChart" class="pie-chart"></canvas>
+
+    <h1>Daily Analysis</h1>
+
+    <!-- Canvas for the daily analysis pie chart -->
+    <canvas id="dailyAnalysisChart" class="pie-chart"></canvas>
+
+    <script type="module">
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "FIREBASE_API_KEY",
+            authDomain: "...",
+            databaseURL: "...",
+            projectId: "sihac-c0b18",
+            storageBucket: "sihac-c0b18.appspot.com",
+            messagingSenderId: "300414668695",
+            appId: "1:300414668695:web:c1477782b41bcf51087ed2",
+            measurementId: "G-LC7QVXJHZ5"
+        };
+
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Function to retrieve data from Firebase
+        const getDataFromFirebase = async () => {
+            try {
+                const snapshot = await firebase.database().ref("messages").once("value");
+                const data = snapshot.val();
+                return data;
+            } catch (error) {
+                console.error("Error fetching data from Firebase:", error);
+            }
+        };
+
+        // Function to upload data from JSON file to Firebase
+        const uploadDataToFirebase = async () => {
+            try {
+                // Fetch data from JSON file
+                const response = await fetch("../static/result.json");
+                const data = await response.json();
+
+                // Iterate through each entry and upload to Firebase
+                data.forEach(entry => {
+                    const { intent, frequency } = entry;
+                    saveMessage(intent, frequency); // Call saveMessage function instead of saveMessages
+                });
+
+                console.log("Data uploaded to Firebase successfully.");
+            } catch (error) {
+                console.error("Error uploading data to Firebase:", error);
+            }
+        };
+
+        // Function to save message to Firebase
+        const saveMessage = (intent, frequency) => {
+            const messagesRef = firebase.database().ref("messages");
+            messagesRef.push({
+                intent: intent,
+                frequency: frequency
+            }).then(() => {
+                console.log("Message saved successfully.");
+            }).catch((error) => {
+                console.error("Error saving message:", error);
+            });
+        };
+
+        // Function to generate pie chart using Chart.js
+        const generatePieChart = (data, canvasId) => {
+            if (!data || typeof data !== 'object') {
+                console.error("Invalid data format:", data);
+                return;
+            }
+
+            const messages = data; // Directly access the data object
+
+            // Create an object to store aggregated frequencies for each intent
+            const intentsFrequencyMap = {};
+
+            // Iterate over each message
+            for (const messageId in messages) {
+                if (Object.hasOwnProperty.call(messages, messageId)) {
+                    const message = messages[messageId];
+                    // Extract frequency and intent from each message
+                    const intent = message.intent;
+                    const frequency = message.frequency;
+
+                    // Aggregate the frequency for each intent
+                    if (intentsFrequencyMap[intent]) {
+                        intentsFrequencyMap[intent] += frequency;
+                    } else {
+                        intentsFrequencyMap[intent] = frequency;
+                    }
+                }
+            }
+
+            // Extract mood labels and frequencies from the intentsFrequencyMap
+            const moodLabels = Object.keys(intentsFrequencyMap);
+            const frequencies = Object.values(intentsFrequencyMap);
+
+            // Generate pie chart using Chart.js
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: moodLabels,
+                    datasets: [{
+                        label: 'Mood Frequency',
+                        data: frequencies,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    aspectRatio: 1
+                }
+            });
+        };
+
+        // Load data from Firebase and generate pie chart for weekly analysis
+        getDataFromFirebase().then((data) => {
+            if (data) {
+                generatePieChart(data, 'weeklyAnalysisChart');
+            }
+        });
+
+        // Load data from Firebase and generate pie chart for daily analysis
+        getDataFromFirebase().then((data) => {
+            if (data) {
+                generatePieChart(data, 'dailyAnalysisChart');
+            }
+        });
+
+        // Event listener for the upload button
+        document.getElementById("uploadButton").addEventListener("click", uploadDataToFirebase);
+
+    </script>
+</body>
+</html>

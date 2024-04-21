@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login Form</title>
+    <link rel="stylesheet" href="../static/css/login.css" />
+    <style>
+        /* Your CSS styles here */
+        .alert {
+            width: 100%;
+            background: red;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-form">
+        <h1>Login</h1>
+        <form>
+            <input type="email" id="email" class="input-box" placeholder="Your Email" />
+            <input type="password" id="psswd" class="input-box" placeholder="Your Password" />
+            <div class="button-with-text">
+                <span class="text-label">Already have a Google account?</span>
+                <button class="round-button">
+                    <div class="image-container">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnw_uBqjQDj4hLr5NRakpD2MOlqALQZHVNrxnsk3jZbKF8Ltd9aTU1OAeW_RaQSUvXoM8&usqp=CAU"
+                            alt="Square Image" class="square-image" />
+                    </div>
+                </button>
+            </div>
+            <p>
+                <span><input type="checkbox" /></span>Remember Me
+            </p>
+            <button type="button" id="bttn" class="button login-btn">Login</button>
+            <hr />
+            <p>Don't have an account yet? <a href="signup.html">Sign up</a></p>
+        </form>
+    </div>
+    <script type="module">
+        // Import the Firebase SDK modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            // Your Firebase config here
+            apiKey: "AIzaSyBCWeVhGTgncN6SuKLXYdFhw13r-SxsQW0",
+            authDomain: "sihac-c0b18.firebaseapp.com",
+            databaseURL: "https://sihac-c0b18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sihac-c0b18",
+            storageBucket: "sihac-c0b18.appspot.com",
+            messagingSenderId: "300414668695",
+            appId: "1:300414668695:web:c1477782b41bcf51087ed2",
+            measurementId: "G-LC7QVXJHZ5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase();
+
+        document.getElementById("bttn").addEventListener("click", submitForm);
+
+        function submitForm() {
+            const k = document.getElementById("email").value;
+            const p = document.getElementById("psswd").value;
+            const arrayRef = ref(database, 'contactForm'); // Replace with your actual database path
+            get(arrayRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        for (const key in data) {
+                            if (Object.hasOwnProperty.call(data, key)) {
+                                const entry = data[key];
+                                // 'entry' contains the data for each entry within "contactForm"
+                                const email = entry.email;
+                                const password = entry.password;
+                                
+                                if (p === password && k === email) {
+                                    alert("Login successful");
+                                } else {
+                                    alert("Invalid email or password");
+                                }
+                            }
+                        }}});
+        }
+        
+    </script>
+</body>
+
+</html>
